@@ -36,8 +36,25 @@ def scrape_nhl_odds():
         if status_element:
             status_text = status_element.text.strip()
             if 'Live P' in status_text:
-                period_part = status_text.replace('Live ', '').split(' ')[0]
-                game_data['current_period'] = period_part
+                # Remove the "Live " prefix and split into parts (if there are spaces)
+                period_parts = status_text.replace('Live ', '').split(' ')
+                if len(period_parts) > 0:
+                    # Remove any accidental "See" text
+                    s = period_parts[0].replace("See", "")
+                    # If the string is longer than 5 characters, assume the last five characters are the time.
+                    if len(s) > 5:
+                        # Everything before the final five characters is the period (e.g., "P1")
+                        game_data['current_period'] = s[:-5]
+                        # The final five characters represent the time (e.g., "13:10")
+                        game_data['time_remaining'] = s[-5:]
+                    else:
+                        # Fallback if the string is too short (this path is less likely to be used).
+                        period_part = s.split(':')[0]
+                        game_data['current_period'] = period_part
+                        if ':' in s:
+                            time_part = s.split(':', 1)[1]
+                            time_part = ''.join(c for c in time_part if c.isdigit() or c == ':')
+                            game_data['time_remaining'] = time_part
             elif 'FINAL' in status_text:
                 if 'OT' in status_text:
                     game_data['current_period'] = 'FINAL OT'
@@ -47,7 +64,7 @@ def scrape_nhl_odds():
                     game_data['current_period'] = 'FINAL'
 
         if 'current_period' not in game_data:
-            status_texts = [elem.strip() for elem in container.find_all(text=True) if elem.strip()]
+            status_texts = [elem.strip() for elem in container.find_all(string=True) if elem.strip()]
             for text in status_texts:
                 if 'FINAL' in text:
                     if 'OT' in text:
@@ -58,12 +75,20 @@ def scrape_nhl_odds():
                         game_data['current_period'] = 'FINAL'
                     break
                 elif 'Live P' in text:
-                    period_part = text.replace('Live ', '').split(' ')[0].split(':')[0]
+                    parts = text.replace('Live ', '').split(' ')
+                    period_part = parts[0].split(':')[0].replace('See', '')
                     game_data['current_period'] = period_part
+                    if ':' in parts[0]:
+                        time_part = parts[0].split(':', 1)[1]
+                        time_part = ''.join(c for c in time_part if c.isdigit() or c == ':')
+                        game_data['time_remaining'] = time_part
                     break
                 elif text.startswith('P') and ':' in text:
                     period_part = text.split(':')[0]
                     game_data['current_period'] = period_part
+                    time_part = text.split(':', 1)[1]
+                    time_part = ''.join(c for c in time_part if c.isdigit() or c == ':')
+                    game_data['time_remaining'] = time_part
                     break
 
         status_p_element = container.select_one('p[class*="__9aFieZX"]')
@@ -72,6 +97,9 @@ def scrape_nhl_odds():
             if status_text.startswith('P') and ':' in status_text:
                 period_part = status_text.split(':')[0]
                 game_data['current_period'] = period_part
+                time_part = status_text.split(':', 1)[1]
+                time_part = ''.join(c for c in time_part if c.isdigit() or c == ':')
+                game_data['time_remaining'] = time_part
 
         odds_table = container.find('table', class_=lambda c: c and '__xBNxWw' in c)
         if odds_table:
@@ -180,7 +208,10 @@ def print_results(parsed_games):
             home_record = f" ({game['home_record']})" if 'home_record' in game else ""
             print(f"  Home Team: {game['home_team']} {home_record}")
         if 'current_period' in game:
-            print(f"  Game Status: {game['current_period']}")
+            status = game['current_period']
+            if 'time_remaining' in game:
+                status += f" {game['time_remaining']}"
+            print(f"  Game Status: {status}")
         if 'away_score' in game and 'home_score' in game:
             print(f"  Score: {game['away_team']} {game['away_score']} - {game['home_team']} {game['home_score']}")
         if 'away_moneyline' in game:
