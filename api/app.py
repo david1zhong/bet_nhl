@@ -1,6 +1,10 @@
 from flask import Flask, jsonify, render_template, request
 import requests
 from bs4 import BeautifulSoup
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+
 from teams_info import team_logos, team_abbreviations
 import os
 
