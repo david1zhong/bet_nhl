@@ -501,27 +501,24 @@ document.addEventListener('DOMContentLoaded', function() {
       alert("Please select at least one bet before submitting");
       return;
     }
-    
+  
     const betAmountInput = document.getElementById('bet-amount');
     const potentialWinningsElement = document.getElementById('potential-winnings');
-    
+  
     if (!betAmountInput || !potentialWinningsElement) return;
-    
+  
     const betAmount = parseFloat(betAmountInput.value) || 0;
     const potentialWinnings = potentialWinningsElement.textContent.replace('$', '');
-    
-    // Get bet type (single or parlay)
+  
     const betType = selectedBets.length > 1 ? 'Parlay' : 'Single';
-    
-    // Get odds
+  
     let odds;
     if (selectedBets.length === 1) {
       odds = formatOdds(selectedBets[0].odds);
     } else {
       odds = formatOdds(calculateParlayOdds(selectedBets));
     }
-    
-    // Prepare bet details
+  
     const betDetails = selectedBets.map(bet => {
       return {
         matchup: `${bet.awayTeam} @ ${bet.homeTeam}`,
@@ -531,8 +528,7 @@ document.addEventListener('DOMContentLoaded', function() {
         odds: formatOdds(bet.odds)
       };
     });
-    
-    // Create data object to send to Google Sheets
+  
     const formData = {
       date: new Date().toISOString(),
       betType: betType,
@@ -542,56 +538,38 @@ document.addEventListener('DOMContentLoaded', function() {
       totalOdds: odds,
       betDetails: JSON.stringify(betDetails)
     };
-    
-    // Display loading state
+  
     const placeBetButton = document.getElementById('place-bet-button');
     if (placeBetButton) {
       placeBetButton.disabled = true;
       placeBetButton.textContent = 'Placing Bet...';
       placeBetButton.classList.add('opacity-75');
     }
-    
-    // Hide any existing messages
+  
     document.getElementById('success-message').classList.add('hidden');
     document.getElementById('error-message').classList.add('hidden');
-    
+  
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwEuvnZIrc0yr8pgUO4MDLsGb7K78XYV_5B8Xtmyfme1kHVni1oC-f5pZs_sl4L_kixBw/exec';
-    
+  
     fetch(scriptURL, {
       method: 'POST',
-      body: JSON.stringify(formData),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      mode: 'no-cors', // 👈 Needed to bypass CORS restrictions
+      body: JSON.stringify(formData)
     })
-    .then(response => {
-      console.log('Success:', response);
-      
-      // Reset UI
+    .then(() => {
       if (placeBetButton) {
         placeBetButton.disabled = false;
         placeBetButton.textContent = 'Place Bet';
         placeBetButton.classList.remove('opacity-75');
       }
-      
-      // Show success message
       document.getElementById('success-message').classList.remove('hidden');
-      
-      // Optional: Clear the betslip after successful submission
-      // selectedBets.length = 0;
-      // updateRightPanel();
     })
-    .catch(error => {
-      console.error('Error:', error);
-      
-      // Reset UI
+    .catch(() => {
       if (placeBetButton) {
         placeBetButton.disabled = false;
         placeBetButton.textContent = 'Place Bet';
         placeBetButton.classList.remove('opacity-75');
       }
-      
-      // Show error message
       document.getElementById('error-message').classList.remove('hidden');
     });
   }
