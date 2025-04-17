@@ -2,13 +2,13 @@ from flask import Flask, jsonify, render_template, request
 import requests
 from bs4 import BeautifulSoup
 from teams_info import team_logos, team_abbreviations
+import os
 
 app = Flask(
     __name__,
-    template_folder="templates",
-    static_folder="../static"
+    template_folder=os.path.join(os.path.dirname(__file__), 'templates'),
+    static_folder=os.path.join(os.path.dirname(__file__), '../static')
 )
-
 
 def scrape_nhl_odds():
     bets_url = "https://sportsdata.usatoday.com/hockey/nhl/odds"
