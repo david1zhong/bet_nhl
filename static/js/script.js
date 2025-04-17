@@ -555,8 +555,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('success-message').classList.add('hidden');
     document.getElementById('error-message').classList.add('hidden');
     
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzoBQi57sg4z5-pDmnUuIM7461JqckGoCaxQjv-6M3FVth-rawGEnn_K7ZoSwRDAsnnpg/exec';
-
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbx8yq7ugBG4JwnDjNmLm-RXCZ2aR2ikvs1xT6tRTjbmz2YxdE12M3XG1tRZsld8ffrfFA/exec';
+    
     fetch(scriptURL, {
       method: 'POST',
       body: JSON.stringify(formData),
