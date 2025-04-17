@@ -549,8 +549,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('success-message').classList.add('hidden');
     document.getElementById('error-message').classList.add('hidden');
   
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwEuvnZIrc0yr8pgUO4MDLsGb7K78XYV_5B8Xtmyfme1kHVni1oC-f5pZs_sl4L_kixBw/exec';
-  
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz4IGrxpDwk-N-HVLiefEpCNVASf1TcM8DbXnZ7G_ZO0m3J-X9FYoWlWkpd3a3nliHzfw/exec';
+    
     fetch(scriptURL, {
       method: 'POST',
       mode: 'no-cors', // 👈 Needed to bypass CORS restrictions
