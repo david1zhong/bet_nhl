@@ -556,8 +556,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('error-message').classList.add('hidden');
     
     // Replace with your Google Apps Script URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbx3NjdIw6A907c582_RXZSsZdhS4tIJKTqDNkbNBFGlmgV3Nc5J3VHZdPJeYds-B1fa/exec';
-
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzoBQi57sg4z5-pDmnUuIM7461JqckGoCaxQjv-6M3FVth-rawGEnn_K7ZoSwRDAsnnpg/exec';
 
     // Send data to Google Sheet
     fetch(scriptURL, {
