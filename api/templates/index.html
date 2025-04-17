@@ -86,7 +86,7 @@
               {% else %}
                 {{ game.over }}
               {% endif %}
-              {% if game.over_winner %}✓{% endif %}
+              {% if game.over_winner %}{% endif %}
             </button>
           </div>
           {% endif %}
@@ -112,7 +112,7 @@
               {% else %}
                 {{ game.away_spread }}
               {% endif %}
-              {% if game.away_spread_winner %}✓{% endif %}
+              {% if game.away_spread_winner %}{% endif %}
             </button>
           </div>
           {% endif %}
@@ -155,7 +155,7 @@
               <span class="text-sm font-medium">
                 {{ game.home_ml }}
               </span>
-              {% if game.home_ml_winner %}✓{% endif %}
+              {% if game.home_ml_winner %}{% endif %}
             </button>
           </div>
           {% endif %}
@@ -181,7 +181,7 @@
               {% else %}
                 {{ game.under }}
               {% endif %}
-              {% if game.under_winner %}✓{% endif %}
+              {% if game.under_winner %}{% endif %}
             </button>
           </div>
           {% endif %}
@@ -207,7 +207,7 @@
               {% else %}
                 {{ game.home_spread }}
               {% endif %}
-              {% if game.home_spread_winner %}✓{% endif %}
+              {% if game.home_spread_winner %}{% endif %}
             </button>
           </div>
           {% endif %}
