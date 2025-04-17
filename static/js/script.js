@@ -549,7 +549,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('success-message').classList.add('hidden');
     document.getElementById('error-message').classList.add('hidden');
   
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbz4IGrxpDwk-N-HVLiefEpCNVASf1TcM8DbXnZ7G_ZO0m3J-X9FYoWlWkpd3a3nliHzfw/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxHpL3GVYqmV7O4lqsDEbsFVtl5GfqgbsKfwNf5rpdl_bBf2uo75Jgs9rTFiPNmzVNu5w/exec';
     
     fetch(scriptURL, {
       method: 'POST',
