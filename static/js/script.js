@@ -44,48 +44,59 @@ document.addEventListener('DOMContentLoaded', function() {
    * Set up event listeners for buttons in games that have started
    */
   function setupGameButtons(container, gameId) {
-    // Find all buttons in this game container
+    // 1. grab all the buttons in this game
     const buttons = container.querySelectorAll('button[type="button"]');
-    
-    // Get both team names for this game
-    const teamRows = container.querySelectorAll('.grid');
-    let awayTeam = '';
-    let homeTeam = '';
-    
+  
+    // 2. grab your two team‐row divs
+    const teamRows = container.querySelectorAll('.team-row');
+    let awayTeam = '', homeTeam = '';
+  
     if (teamRows.length >= 2) {
-      const awayTeamElement = teamRows[0].querySelector('.font-medium.text-lg');
-      const homeTeamElement = teamRows[1].querySelector('.font-medium.text-lg');
-      
-      if (awayTeamElement) awayTeam = awayTeamElement.textContent.trim();
-      if (homeTeamElement) homeTeam = homeTeamElement.textContent.trim();
+      awayTeam = teamRows[0]
+        .querySelector('.font-medium')
+        .textContent.trim();
+      homeTeam = teamRows[1]
+        .querySelector('.font-medium')
+        .textContent.trim();
     }
-    
+  
+    // 3. wire up each button
     buttons.forEach(button => {
       button.addEventListener('click', function() {
-        // Get the data from the button
         const dataGroup = button.dataset.group || '';
         const dataValue = button.dataset.value || '';
-        
-        // Determine bet type based on the data-group attribute
+    
+        // 1) Determine betType exactly as you already do:
         let betType = '';
-        if (dataGroup.includes('moneyline')) {
-          betType = 'moneyline';
-        } else if (dataGroup.includes('total_over')) {
-          betType = 'over';
-        } else if (dataGroup.includes('total_under')) {
-          betType = 'under';
-        } else if (dataGroup.includes('spread')) {
-          betType = 'spread';
+        if (dataGroup.includes('_moneyline'))       betType = 'moneyline';
+        else if (dataGroup.includes('_total_over'))  betType = 'over';
+        else if (dataGroup.includes('_total_under')) betType = 'under';
+        else if (dataGroup.includes('_spread_'))     betType = 'spread';
+    
+        // 2) Grab the row THIS button lives in:
+        const thisRow = button.closest('.team-row');
+    
+        // 3) If it's moneyline or spread, the teamName is whatever that row says:
+        let teamName;
+        if (betType === 'moneyline' || betType === 'spread') {
+          teamName = thisRow
+            .querySelector('.font-medium')
+            .textContent
+            .trim();
         }
-        
-        // Get team name from the closest row
-        const row = button.closest('.grid');
-        const teamNameElement = row ? row.querySelector('.font-medium.text-lg') : null;
-        const teamName = teamNameElement ? teamNameElement.textContent.trim() : `Game ${gameId}`;
-        
-        // Get matchup information
+        // 4) If it's over/under, you might want a “Total X” label instead:
+        else if (betType === 'over' || betType === 'under') {
+          const parts = dataValue.split(' ');
+          teamName = `${betType === 'over' ? 'Over' : 'Under'} ${parts[1]}`; 
+        }
+        // 5) Otherwise fallback to Game#
+        else {
+          teamName = `Game ${gameId}`;
+        }
+    
+        // 6) Full away @ home for the mini-line below
         const matchup = `${awayTeam} @ ${homeTeam}`;
-        
+  
         // Extract specific bet details
         let betDescription = '';
         let displayName = teamName;
